@@ -1,0 +1,75 @@
+# <Copyright Holder>. Copyright (C) <Copyright Year(s)>. <License>.
+
+#
+# Project Properties
+#
+CMAKE_MINIMUM_REQUIRED (VERSION 2.6.2)
+PROJECT (projectname)
+SET (APPLICATION_NAME "Project Name")
+SET (APPLICATION_CODENAME "${PROJECT_NAME}")
+SET (APPLICATION_COPYRIGHT_YEARS "2009")
+SET (APPLICATION_VERSION_MAJOR 1)
+SET (APPLICATION_VERSION_MINOR 0)
+SET (APPLICATION_VERSION_PATCH 0)
+SET (APPLICATION_VERSION_TYPE SNAPSHOT)
+SET (APPLICATION_VERSION_STRING "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.${APPLICATION_VERSION_PATCH}-${APPLICATION_VERSION_TYPE}")
+SET (APPLICATION_VENDOR_ID "com.yourcompany")
+SET (APPLICATION_VENDOR_NAME "Your Company")
+SET (APPLICATION_VENDOR_URL "yourcompany.com")
+SET (APPLICATION_ID "${APPLICATION_VENDOR_ID}.${PROJECT_NAME}")
+
+#
+# Project Output Paths
+#
+SET (MAINFOLDER ${PROJECT_SOURCE_DIR})
+SET (EXECUTABLE_OUTPUT_PATH "${MAINFOLDER}/bin")
+SET (LIBRARY_OUTPUT_PATH "${MAINFOLDER}/lib")
+
+#
+# Project Search Paths
+#
+LIST (APPEND CMAKE_PREFIX_PATH "${MAINFOLDER}")
+LIST (APPEND CMAKE_PREFIX_PATH "${MAINFOLDER}/tools")
+LIST (APPEND CMAKE_PREFIX_PATH "${MAINFOLDER}/thirdparty")
+SET (CMAKE_MODULE_PATH "${MAINFOLDER}/tools/share/cmake")
+
+#
+# Locate Project Prerequisites 
+#
+SET (Boost_ADDITIONAL_VERSIONS "1.39" "1.39.0" "1.40" "1.40.0" "1.41" "1.41.0" "1.42" "1.42.0" "1.43" "1.43.0" "1.44" "1.44.0" "1.45" "1.45.0" "1.46" "1.46.0" "1.47" "1.47.0" "1.48" "1.48.0" "1.49" "1.49.0" "1.50" "1.50.0")
+FIND_PACKAGE (Boost 1.37 COMPONENTS "date_time" "filesystem" "graph" "iostreams" "program_options" "random" "regex" "serialization" "signals" "system" "thread" "wserialization" REQUIRED)
+FIND_PACKAGE (Qt4 REQUIRED)
+FIND_PACKAGE (Log4Cxx REQUIRED)
+FIND_PACKAGE (UnitTestPlusPlus REQUIRED)
+
+#
+# Configure Files
+#
+FILE (GLOB_RECURSE CONFIGINPUTS include/*.in.h.cmake include/*.h.in.cmake src/*.in.h.cmake src/*.h.in.cmake test/*.in.h.cmake test/*.h.in.cmake)
+FOREACH (CONFIGINPUT ${CONFIGINPUTS})
+    STRING (REPLACE ".in.h.cmake" ".h" CONFIGOUTPUT1 ${CONFIGINPUT})
+    STRING (REPLACE ".h.in.cmake" ".h" CONFIGOUTPUT2 ${CONFIGOUTPUT1})
+    CONFIGURE_FILE (${CONFIGINPUT} ${CONFIGOUTPUT2})
+ENDFOREACH (CONFIGINPUT ${CONFIGINPUTS})
+
+#
+# Generate MOC Files
+#
+FILE (GLOB_RECURSE AUTOMOCINPUTS src/*.cpp src/*.cxx src/*.cc src/*.C)
+QT4_AUTOMOC (${AUTOMOCINPUTS})
+
+#
+# Add Build Targets
+#
+ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(test)
+
+#
+# Add Documentation Targets
+#
+INCLUDE (DocumentationTargets)
+
+
+
+
+
