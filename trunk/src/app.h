@@ -2,7 +2,10 @@
 #ifndef HEADER_SRC_APP_H_INCLUDED
 #define HEADER_SRC_APP_H_INCLUDED
 
-#include <QString>
+#include <QtCore>
+#include <QtGui>
+#include <log4cxx/logger.h>
+#include <boost/shared_ptr.hpp>
 
 class App : public QApplication
 {
@@ -26,13 +29,28 @@ class App : public QApplication
         QString getProjectInvocation();
 
     private:
+        void initGUI();
+        void interactiveMain();
+        void consoleMain();
+    
         void printHelpMessage();
         void printVersionMessage();
         void printVersionTripletMessage();
         void printApplicationIdentifier();
+        void setPreference(const std::string& key, const std::string& val);
+        void unsetPreference(const std::string& key);
+        void printPreference(const std::string& key)const;
+        void printAllPreferences()const;
+        void setLogLevel(const std::string& logger, const std::string& level);
+        std::string asKey(const std::string& key)const;
+        
         
         static App* _instance;
+        static log4cxx::LoggerPtr _logger;
         QString _invocation;
+        bool _gui;
+        bool _interactive;
+        boost::shared_ptr<QMainWindow> _mainwindow;
 };
 
 #endif
