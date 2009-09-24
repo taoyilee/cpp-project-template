@@ -24,7 +24,6 @@ SET (APPLICATION_ID "${APPLICATION_VENDOR_ID}.${PROJECT_NAME}")
 #
 SET (CMAKE_VERBOSE_MAKEFILE 0) # Use 1 for debugging, 0 for release
 
-
 #
 # Project Output Paths
 #
@@ -44,10 +43,10 @@ SET (CMAKE_MODULE_PATH "${MAINFOLDER}/tools/share/cmake")
 # Locate Project Prerequisites 
 #
 SET (Boost_ADDITIONAL_VERSIONS "1.39" "1.39.0" "1.40" "1.40.0" "1.41" "1.41.0" "1.42" "1.42.0" "1.43" "1.43.0" "1.44" "1.44.0" "1.45" "1.45.0" "1.46" "1.46.0" "1.47" "1.47.0" "1.48" "1.48.0" "1.49" "1.49.0" "1.50" "1.50.0")
-FIND_PACKAGE (Boost 1.37 COMPONENTS "date_time" "filesystem" "graph" "iostreams" "program_options" "random" "regex" "serialization" "signals" "system" "thread" "wserialization" REQUIRED)
+FIND_PACKAGE (Boost 1.37 COMPONENTS "date_time" "filesystem" "graph" "iostreams" "program_options" "regex" "serialization" "signals" "system" "thread" "wserialization" REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 FIND_PACKAGE (Qt4 REQUIRED)
-INCLUDE(${QT_USE_FILE})
+INCLUDE(UseQt4)
 FIND_PACKAGE (Log4Cxx REQUIRED)
 INCLUDE_DIRECTORIES(${Log4Cxx_INCLUDE_DIRS})
 FIND_PACKAGE (UnitTestPlusPlus REQUIRED)
@@ -56,18 +55,23 @@ INCLUDE_DIRECTORIES(${UnitTestPlusPlus_INCLUDE_DIRS})
 #
 # Configure Files
 #
-FILE (GLOB_RECURSE CONFIGINPUTS include/*.in.h.cmake include/*.h.in.cmake src/*.in.h.cmake src/*.h.in.cmake test/*.in.h.cmake test/*.h.in.cmake)
+FILE (GLOB_RECURSE CONFIGINPUTS1 include/*.in.h.cmake)
+FILE (GLOB_RECURSE CONFIGINPUTS2 include/*.h.in.cmake)
+FILE (GLOB_RECURSE CONFIGINPUTS3 src/*.in.h.cmake)
+FILE (GLOB_RECURSE CONFIGINPUTS4 src/*.h.in.cmake)
+FILE (GLOB_RECURSE CONFIGINPUTS5 test/*.in.h.cmake)
+FILE (GLOB_RECURSE CONFIGINPUTS6 test/*.h.in.cmake)
+LIST (APPEND CONFIGINPUTS "${CONFIGNPUTS1}")
+LIST (APPEND CONFIGINPUTS "${CONFIGNPUTS2}")
+LIST (APPEND CONFIGINPUTS "${CONFIGNPUTS3}")
+LIST (APPEND CONFIGINPUTS "${CONFIGNPUTS4}")
+LIST (APPEND CONFIGINPUTS "${CONFIGNPUTS5}")
+LIST (APPEND CONFIGINPUTS "${CONFIGNPUTS6}")
 FOREACH (CONFIGINPUT ${CONFIGINPUTS})
-    STRING (REPLACE ".in.h.cmake" ".h" CONFIGOUTPUT1 ${CONFIGINPUT})
-    STRING (REPLACE ".h.in.cmake" ".h" CONFIGOUTPUT2 ${CONFIGOUTPUT1})
-    CONFIGURE_FILE (${CONFIGINPUT} ${CONFIGOUTPUT2})
+    STRING (REPLACE ".in.h.cmake" ".h" CONFIGOUTPUT1 "${CONFIGINPUT}")
+    STRING (REPLACE ".h.in.cmake" ".h" CONFIGOUTPUT2 "${CONFIGOUTPUT1}")
+    CONFIGURE_FILE ("${CONFIGINPUT}" "${CONFIGOUTPUT2}")
 ENDFOREACH (CONFIGINPUT ${CONFIGINPUTS})
-
-#
-# Generate MOC Files
-#
-FILE (GLOB_RECURSE AUTOMOCINPUTS src/*.cpp src/*.cxx src/*.cc src/*.C)
-QT4_AUTOMOC (${AUTOMOCINPUTS})
 
 #
 # Add Build Targets
@@ -79,7 +83,6 @@ ADD_SUBDIRECTORY(test)
 # Add Documentation Targets
 #
 INCLUDE (DocumentationTargets)
-
 
 
 

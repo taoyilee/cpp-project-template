@@ -8,7 +8,6 @@
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/patternlayout.h>
 #include "app.h"
-#include "app.moc"
 #include "appinfo.h"
 
 namespace
