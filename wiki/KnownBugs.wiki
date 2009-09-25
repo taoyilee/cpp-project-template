@@ -1,0 +1,10 @@
+#summary A list of known bugs.
+
+= Bugs =
+== Mac OS X 10.6 Snow Leopard ==
+This template does not work on Mac OS X 10.6 Snow Leopard, due to a bug in the Qt 4.5 that makes building projects with Qt 4.5 under Mac OS X Snow Leopard fail. If are able to figure out how to get it compile on Snow Leopard, please share it with us. Otherwise, we may have to wait for Qt 4.6 to be released in order to use this template on Snow Leopard.
+
+== Automoc ==
+This template is currently making a call to "QT4_WRAP_CPP" with an explicit list of header files for which a corresponding meta-object C++ source file needs to be generated. Ideally, this template would use "QT4_AUTOMOC", in order to automatically generate the needed meta-object source files (without explicitly stating which headers to look at). Unfortunately, I was unable to find a way to do this using "QT4_AUTOMOC"; when including both "app.h" and "app.moc" from "app.cpp", the needed "app.moc" source file would be generated on some systems, but not on others. (It generated on Mac OS X Snow Leopard -- although, after the file generated, the build failed; but did not generate on Ubuntu Jaunty).
+
+If you are able to figure out how to use "QT4_AUTOMOC" in a way that consistently generates the required moc files, please let me know, so that I can include this feature in the template.
