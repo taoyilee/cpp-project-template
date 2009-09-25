@@ -42,7 +42,10 @@ class App : public QApplication
         void printPreference(const std::string& key)const;
         void printAllPreferences()const;
         void setLogLevel(const std::string& logger, const std::string& level);
-        std::string asKey(const std::string& key)const;
+        std::string getKeyName(const std::string& key)const;
+        std::string getKeyRepr(const std::string& key)const;
+        std::string convert(const QString& str)const;
+        QString convert(const std::string& str)const;
         
         
         static App* _instance;

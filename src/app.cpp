@@ -3,6 +3,7 @@
 #include <cctype>
 #include <exception>
 #include <stdexcept>
+#include <memory>
 #include <log4cxx/logger.h>
 #include <log4cxx/level.h>
 #include <log4cxx/consoleappender.h>
@@ -12,18 +13,18 @@
 
 namespace
 {
-    bool matches_option(const QString& str1, const QString& str2, int mindashes=1, int maxdashes=2){
+    bool matches_option(const QString& givenoption, const QString& expectedoption, int mindashes=1, int maxdashes=2){
         int dashes = 0;
-        if ( str2.length() > 0 ){
-            while ((dashes<str2.length())&&(str2[dashes]=='-')){
+        if ( givenoption.length() > 0 ){
+            while ((dashes<givenoption.length())&&(givenoption[dashes]=='-')){
                 dashes++;
             }
         }
         if ( (dashes < mindashes) || (dashes > maxdashes) ){
             return false;
         }
-        QString substr=str2.right(str2.length()-dashes);
-        return (str1.compare(substr,Qt::CaseInsensitive)==0);
+        QString substr=givenoption.right(givenoption.length()-dashes);
+        return (expectedoption.compare(substr,Qt::CaseInsensitive)==0);
     }
 }
 
@@ -40,6 +41,9 @@ App::App(int& argc, char** argv) : QApplication(argc,argv), _invocation(argv[0])
     if ( _instance ){
         throw std::runtime_error("Only one instance of App allowed.");
     }
+
+    // Remember if we are done
+    bool done = false;
 
     // Set the singleton instance to this
     _instance = this;
@@ -91,6 +95,7 @@ App::App(int& argc, char** argv) : QApplication(argc,argv), _invocation(argv[0])
             }else{
                 unsetPreference(param);
             }
+            done = true;
         }else if ( matches_option(arg,"prefdel") ){
             // Verify that there is another argument
             if ( (idx+1) >= argc ){
@@ -106,8 +111,10 @@ App::App(int& argc, char** argv) : QApplication(argc,argv), _invocation(argv[0])
             
             // Remove the preference
             unsetPreference(param);
+            done = true;
         }else if ( matches_option(arg,"preflist") ){
             printAllPreferences();
+            done = true;
         }else if ( matches_option(arg,"prefget") ){
             // Verify that there is another argument
             if ( (idx+1) >= argc ){
@@ -123,6 +130,7 @@ App::App(int& argc, char** argv) : QApplication(argc,argv), _invocation(argv[0])
             
             // Print the preference
             printPreference(param);
+            done = true;
         }else if ( matches_option(arg,"loglevel") ){
             // Verify that there is another argument
             if ( (idx+1) >= argc ){
@@ -172,6 +180,9 @@ App::App(int& argc, char** argv) : QApplication(argc,argv), _invocation(argv[0])
         idx++;
     }
     
+    if ( done ){
+        std::exit(0);
+    }
     
     if ( _gui ){
         initGUI();
@@ -203,7 +214,17 @@ App::initGUI()
     
     // Setup the central widget
     QWidget* centralwidget = _mainwindow->centralWidget();
-    QLabel* label = new QLabel("Hello world!",centralwidget);
+    QDesktopWidget* desktopwidget = desktop();
+    int preferredwidth = 1024;
+    int preferredheight = 768;
+    int leftmargin = (desktopwidget->width()-preferredwidth)/2;
+    int topmargin  = (desktopwidget->height()-preferredheight)/2;
+    centralwidget->setWindowTitle(getProjectName());
+    centralwidget->setFixedSize(preferredwidth,preferredheight);
+    std::auto_ptr<QLabel> label(new QLabel("Hello world!"));
+    std::auto_ptr<QGridLayout> layout(new QGridLayout);
+    layout->addWidget(label.release(),0,0,Qt::AlignCenter);
+    centralwidget->setLayout(layout.release());
     
     // Setup the toolbars
     // ...
@@ -214,6 +235,7 @@ App::initGUI()
     
     // Display the main window
     _mainwindow->setVisible(true);
+    _mainwindow->move(leftmargin,topmargin);
 }
 
 void 
@@ -343,7 +365,7 @@ App::getProjectInvocation()
 }
 
 std::string
-App::asKey(const std::string& key)const
+App::getKeyName(const std::string& key)const
 {
     std::string result(key);
     for ( size_t i = 0; i < result.size(); i++ ){
@@ -354,84 +376,56 @@ App::asKey(const std::string& key)const
     return result;
 }
 
+std::string
+App::getKeyRepr(const std::string& key)const
+{
+    std::string result(key);
+    for ( size_t i = 0; i < result.size(); i++ ){
+        if ( (result[i]=='/') || (result[i]=='\\') ){
+            result[i] = '/';
+        }
+    }
+    return result;
+}
+
 void 
 App::setPreference(const std::string& key, const std::string& val)
 {
     QSettings settings;
-    std::string newkey = asKey(key);
-    size_t indexofprevdot = 0;
-    size_t indexofdot     = newkey.find('.');
-    int groups = 0;
-    while ( indexofdot != std::string::npos ){
-        groups++;
-        std::string nextgroup = newkey.substr(indexofprevdot,indexofdot-indexofprevdot);
-        settings.beginGroup(QString(nextgroup.c_str()));
-        indexofprevdot = indexofdot+1;
-        indexofdot = newkey.find('.',indexofprevdot);
-    }
-    
-    std::string actualkey = newkey.substr(indexofprevdot);
-    settings.setValue(QString(actualkey.c_str()),QString(val.c_str()));
+    std::string keyrep(getKeyRepr(key));
+    QString qkeyrep(keyrep.c_str());
+    QString qval(val.c_str());
+    settings.setValue(qkeyrep,qval);
     settings.sync();
-    
-    for ( int i = 0; i< groups; i++ ){
-        settings.endGroup();
-    }
 }
 
 void 
 App::unsetPreference(const std::string& key)
 {
     QSettings settings;
-    std::string newkey = asKey(key);
-    size_t indexofprevdot = 0;
-    size_t indexofdot     = newkey.find('.');
-    int groups = 0;
-    while ( indexofdot != std::string::npos ){
-        groups++;
-        std::string nextgroup = newkey.substr(indexofprevdot,indexofdot-indexofprevdot);
-        settings.beginGroup(QString(nextgroup.c_str()));
-        indexofprevdot = indexofdot+1;
-        indexofdot = newkey.find('.',indexofprevdot);
+    std::string keyrep(getKeyRepr(key));
+    QString qkeyrep(keyrep.c_str());
+    settings.beginGroup(qkeyrep);
+    if ( (settings.childGroups().length()!=0) || (settings.childKeys().length()!=0) ){
+        settings.setValue("","");
+    }else{
+        settings.remove("");
     }
-    
-    std::string actualkey = newkey.substr(indexofprevdot);
-    settings.remove(QString(actualkey.c_str()));
-    
-    for ( int i = 0; i< groups; i++ ){
-        settings.endGroup();
-    }
+    settings.endGroup();
+    settings.sync();
 }
 
 void 
 App::printPreference(const std::string& key)const
 {
     QSettings settings;
-    std::string newkey = asKey(key);
-    size_t indexofprevdot = 0;
-    size_t indexofdot     = newkey.find('.');
-    int groups = 0;
-    while ( indexofdot != std::string::npos ){
-        groups++;
-        std::string nextgroup = newkey.substr(indexofprevdot,indexofdot-indexofprevdot);
-        settings.beginGroup(QString(nextgroup.c_str()));
-        indexofprevdot = indexofdot+1;
-        indexofdot = newkey.find('.',indexofprevdot);
+    std::string keyrep(getKeyRepr(key));
+    QString qkeyrep(keyrep.c_str());
+    QString result="undefined";
+    if ( settings.contains(qkeyrep) ){
+        result=settings.value(qkeyrep,QString("undefined")).toString();
     }
-    
-    std::string actualkey = newkey.substr(indexofprevdot);
-    QString keystring(actualkey.c_str());
-    
-    if ( settings.contains(keystring) ){
-        std::cout << settings.value(keystring).toString() << std::endl;
-    }else{
-        std::cout << "undefined" << std::endl;
-    }
-    
-    
-    for ( int i = 0; i< groups; i++ ){
-        settings.endGroup();
-    }
+    std::cout << result << std::endl;
 }
 
 void 
@@ -441,10 +435,12 @@ App::printAllPreferences()const
     QStringList keys = settings.allKeys();
     for ( QStringList::const_iterator it = keys.begin(); it != keys.end(); ++it ){
         QString qkeystr = *it;
-        QByteArray qkeystrdata = qkeystr.toUtf8();
-        std::string keystr(qkeystrdata.constData());
-        std::string key = asKey(keystr);
-        std::cout << key << "=" << settings.value(qkeystr).toString() << std::endl;
+        QString qvalstr = settings.value(qkeystr).toString();
+        
+        if ( ! qvalstr.isEmpty() ){
+            std::string key=getKeyName(convert(qkeystr));
+            std::cout << key << "=" << qvalstr << std::endl;
+        }
     }
 }
 
@@ -477,6 +473,21 @@ App::setLogLevel(const std::string& logger, const std::string& level)
         LOG4CXX_FATAL(_logger,"Unrecognized logging level: \"" << level << "\".");
         std::exit(1);
     }
+}
+
+std::string 
+App::convert(const QString& str)const
+{
+    QByteArray data = str.toUtf8();
+    std::string result(data.constData());
+    return result;
+}
+
+QString 
+App::convert(const std::string& str)const
+{
+    QString result(str.c_str());
+    return result;
 }
 
 App*
