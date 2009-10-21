@@ -20,6 +20,7 @@ distclean:
 	@- $(RM) ./build/CMake*
 	@- $(RM) ./build/cmake.*
 	@- $(RM) ./build/*.cmake
+	@- $(RM) ./build/*.txt
 	@- $(RM) ./docs/*.html
 	@- $(RM) ./docs/*.css
 	@- $(RM) ./docs/*.png
