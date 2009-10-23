@@ -4,6 +4,6 @@
 
 This project template should work on any system that has its dependencies (Boost C++ Libraries, Qt4 SDK, Log4Cxx, and UnitTest++) properly installed and configured. That said, differences between development environments can lead to unexpected or unusual failures. Or, it is possible that you or one of the developers on your team is having difficulty in installing and configuring these tools. In such a case, please follow the setup directions given below for your respective platform: 
 
- * [http://sites.google.com/site/michaelsafyan/coding/cpp/setup/windows C++ Setup on Windows]
- * [http://sites.google.com/site/michaelsafyan/coding/cpp/setup/mac-os-x C++ Setup on Mac OS X]
- * [http://sites.google.com/site/michaelsafyan/coding/cpp/setup/ubuntu C++ Setup on Ubuntu Linux]
+ * [http://sites.google.com/site/michaelsafyan/coding/resources/how-to-guides/development-environment-setup/cpp/windows C++ Setup on Windows]
+ * [http://sites.google.com/site/michaelsafyan/coding/resources/how-to-guides/development-environment-setup/cpp/mac-os-x C++ Setup on Mac OS X]
+ * [http://sites.google.com/site/michaelsafyan/coding/resources/how-to-guides/development-environment-setup/cpp/ubuntu C++ Setup on Ubuntu Linux]
