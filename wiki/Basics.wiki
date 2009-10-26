@@ -196,3 +196,12 @@ The configuration keys can be grouped hierarchically. When using the QSettings f
 
 = Logging = 
 The project template automatically checks for the existence of the Log4Cxx library and automatically links the main executable with the Log4Cxx library. It is highly recommended that you use Log4Cxx for your logging needs. See the [http://logging.apache.org/log4cxx/apidocs/ Log4Cxx API Reference] for details on using the Log4Cxx library.
+
+This project contains two commandline options for configuring Log4Cxx:
+
+ * --loglevel _level_
+ * --loglevel _class_=_level_
+
+The first invocation sets the level of the root logger to the specified level. The second invocation sets the given class logger to the given level. Valid levels are "all", "trace", "debug", "info", "warn", "error", "fatal", and "off". 
+
+This project also sets the default appender and pattern layout. If you would like to change the appender or logging output format, you will need to change a few lines towards the top of the "App::App" constructor in "src/app.cpp".
