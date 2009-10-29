@@ -128,7 +128,7 @@ For step-by-step instructions on setting up a C/C++ development environment see:
 Assuming you have all the prerequisites satisfied, building the project simply involves invoking "make". The typical "make clean" and "make distclean" targets also exist. You can type "make help" for a full list of build targets.
 
 = Editing the Template =
-You can edit the project template with IDE or code editor of your choosing. I personally prefer using Xcode on Mac OS X, Code::Blocks on Windows, and Anjuta C/C++, KDevelop, or Gedit on Linux, but it is all a matter of personal preference.
+You can edit the project template with the IDE or code editor of your choosing. I personally prefer using Xcode on Mac OS X, Code::Blocks on Windows, and Anjuta C/C++, KDevelop, or Gedit on Linux, but it is all a matter of personal preference.
 
 = Customizing the Template =
 At the top of the top-level "CMakeLists.txt" file you will find:
@@ -179,7 +179,7 @@ Implementing the graphical main involves editing "App::initGUI()" in "src/app.cp
 Your "initGUI()" function should be sensitive to the commandline parameters accepted by "consoleMain()" and "interactiveMain()", but should use reasonable default values for any parameters that have not been supplied by the user on the commandline.
 
 = Preferences =
-The [http://code.google.com/p/cpp-project-template/ C++ Project Template] uses the [http://doc.trolltech.com/4.5/qsettings.html QSettings] class for loading and storing configuration parameters. The template configures QSettings (or, more accurate, QCoreApplication) so that a QSettings object constructed using the default constructor will automatically load/save settings that are particular to your project (using the project identification information in the top-level CMakeLists.txt file).
+The [http://code.google.com/p/cpp-project-template/ C++ Project Template] uses the [http://doc.trolltech.com/4.5/qsettings.html QSettings] class for loading and storing configuration parameters. The template configures QSettings (or, more accurately, the QCoreApplication class) so that a QSettings object constructed using the default constructor will automatically load/save settings that are particular to your project (using the project identification information in the top-level CMakeLists.txt file).
 
 The project template provides several commandline options for manipulating the project's configuration parameters. The template supports the following commandline options:
 
