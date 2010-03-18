@@ -75,13 +75,13 @@ If you place this project in Subversion, you will probably want to set the "svn:
 == build/ == 
 This is where CMake will generate intermediate build products, including CMake's variable and configuration cache. You should generally not touch this folder.
 
-If you place this project in Subversion, you will probably want to set the "svn:ignore" property to "*" for this folder (i.e. "svn propset svn:ignore '*' build").
+If you place this project in Subversion, you will probably want to set the "svn:ignore" property to "`*`" for this folder (i.e. "svn propset svn:ignore '`*`' build").
 
 == configure ==
 This BASH script invokes CMake. It is there so that user's who are familiar with the "./configure", then "make", then "sudo make install" will feel comfortable using your project. You do not need to touch or edit this file. You can use "make" directly, without first invoking "./configure", since the configuration step will run if necessary.
 
 == docs/ ==
-This is where the project's Doxygen documentation will be generated, if you invoke the "make docs" or "make doxygen" targets. If you place this project in a Subversion repository, you will probably want to invoke "svn propset svn:ignore '*' docs".
+This is where the project's Doxygen documentation will be generated, if you invoke the "make docs" or "make doxygen" targets. If you place this project in a Subversion repository, you will probably want to invoke "svn propset svn:ignore '`*`' docs".
 
 == include/ ==
 You should place your project's public header files (i.e. the header files that you want the user's of your project to able to include) in a subfolder of "include/". The name of the subfolder should correspond to your project's name. The "include/" folder is automatically added to the header search paths, so if you create a master header file for your project named "projectname.h" and place it in "include/projectname/", then you will be able to include it from your source code using "#include <projectname/projectname.h>".
@@ -89,7 +89,7 @@ You should place your project's public header files (i.e. the header files that 
 == lib/ ==
 This is where all library files built by the project are generated. You can use the "ADD_LIBRARY" command in CMake to specify additional libraries to generate.
 
-If you place this project in Subversion, you will probably want to set the "svn:ignore" property to "*" for this folder (i.e. "svn propset svn:ignore '*' lib").
+If you place this project in Subversion, you will probably want to set the "svn:ignore" property to "`*`" for this folder (i.e. "svn propset svn:ignore '`*`' lib").
 
 == share/ ==
 You should place any data files that your project needs in a subfolder of this folder. The name of the subfolder should, in some way, correspond to your project's name.
