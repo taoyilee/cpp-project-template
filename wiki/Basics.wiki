@@ -70,7 +70,7 @@ This is where you should place basic documentation for your project. It should i
 == bin/ ==
 This is where all executable files built by the project are generated. You can use the "ADD_EXECUTABLE" command in CMake to specify additional executables to generate.
 
-If you place this project in Subversion, you will probably want to set the "svn:ignore" property to "*" for this folder (i.e. "svn propset svn:ignore '*' bin").
+If you place this project in Subversion, you will probably want to set the "svn:ignore" property to "`*`" for this folder (i.e. "svn propset svn:ignore '`*`' bin").
 
 == build/ == 
 This is where CMake will generate intermediate build products, including CMake's variable and configuration cache. You should generally not touch this folder.
