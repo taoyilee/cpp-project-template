@@ -160,11 +160,11 @@ There are three types of main routines that this project supports:
 
 Both the commandline and interactive main use STDIN (std::cin) and STDOUT (std::cout) for input and output; however, the commandline variant should expect all the necessary information to be provided in the commandline invocation whereas the interactive variant should prompt the user for any required information that has not been provided. The graphical main uses a Qt GUI to interact with the user. 
 
-By default, the commandline main is used. The interactive main may be invoked by passing the argument "--interactive" on the commandline. The GUI main may be invoked by passing the "--gui" argument on the commandline.=
+By default, the commandline main is used. The interactive main may be invoked by passing the argument "--interactive" on the commandline. The GUI main may be invoked by passing the "--gui" argument on the commandline.
 
 Implementing the commandline main involves:
  * Adding member variables to "App" in "src/app.h" to reflect any additional commandline arguments that your program will accept.
- * Augmenting "App::App(int argc, char** argv)" in "src/app.cpp" to handle any additional commandline arguments that your program accepts and to store their values in the added member variables.
+ * Augmenting "App::App(int argc, char`*``*` argv)" in "src/app.cpp" to handle any additional commandline arguments that your program accepts and to store their values in the added member variables.
  * Updating "App::printHelpMessage()" in "src/app.cpp" to print the added commandline parameters and what those parameters mean.
  * Replacing the body of "App::consoleMain()" in "src/app.cpp" to use the commandline parameters and generate the necessary output.
 
